@@ -1,0 +1,50 @@
+﻿@page
+<div class="container">
+    <div class="row p-1">
+        <div class="col-1">User</div>
+        <div class="col-5"><input type="text" id="userInput" /></div>
+    </div>
+    <div class="row p-1">
+        <div class="col-1">Message</div>
+        <div class="col-5"><input type="text" class="w-100" id="messageInput" /></div>
+    </div>
+    <div class="row p-1">
+        <div class="col-6 text-end">
+            <input type="button" id="sendButton" value="Send Message" />
+            <input type="button" id="startVideoChatButton" value="Start Video Chat" />
+            <input type="button" id="endVideoChatButton" value="End Video Chat" />
+            <select id="targetUserDropdown">
+                <option value="user1">User 1</option>
+                <option value="user2">User 2</option>
+                <option value="user3">User 3</option>
+                <!-- Add more options as needed -->
+            </select>
+        </div>
+    </div>
+    <div class="row p-1">
+        <div class="col-6">
+            <hr />
+        </div>
+    </div>
+    <div class="row p-1">
+        <div class="col-6">
+            <ul id="messagesList"></ul>
+        </div>
+    </div>
+    <div class="row p-1">
+        <div class="col-6">
+            <video id="localVideo" autoplay></video>
+            
+            @*<div id="remoteVideosContainer">
+                <video id="remoteVideo" autoplay></video>
+            </div>*@
+
+        </div>
+        <div class="col-6" id="remoteVideosContainer">
+        </div>
+    </div>
+</div>
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+@*<script src="~/lib/signalr/signalr.js"></script>*@
+<script src="~/js/chat.js"></script>

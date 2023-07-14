@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "Video Chat";
+}
+
+<h1>Video Chat</h1>
+<button onclick="startVideoChat()">Start Video Chat</button>
+<br>
+<video id="localVideo" autoplay></video>
+<video id="remoteVideo" autoplay></video>
+
+@section Scripts{
+    <script src="~/lib/signalr/signalr.js"></script>
+    <script>
+        const connection = new signalR.HubConnectionBuilder().withUrl("/signalr").build();
+        let localStream;
+        let remoteVideo = document.getElementById("remoteVideo");
+        connection.on("ReceiveVideoOffer", async (offer) => {
+            console.log("Received video offer:", offer);
+
+            const peerConnection = new RTCPeerConnection();
+            await peerConnection.setRemoteDescription(offer);
+
+            localStream.getTracks().forEach((track) => {
+                peerConnection.addTrack(track, localStream);
+            });
+
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+
+            connection.invoke("SendVideoAnswer", answer);
+        });
+
+        connection.on("ReceiveVideoAnswer", async (answer) => {
+            console.log("Received video answer:", answer);
+            await peerConnection.setRemoteDescription(answer);
+        });
+
+        connection.on("ReceiveNewICECandidate", async (candidate) => {
+            console.log("Received new ICE candidate:", candidate);
+            await peerConnection.addICECandidate(candidate);
+        });
+
+        connection.start()
+            .then(() => {
+                console.log("Connection established");
+            })
+            .catch((err) => {
+                console.error(err.toString());
+            });
+
+        async function startVideoChat() {
+            localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            let localVideo = document.getElementById("localVideo");
+            localVideo.srcObject = localStream;
+            connection.invoke("StartVideoChat");
+        }
+    </script>
+}

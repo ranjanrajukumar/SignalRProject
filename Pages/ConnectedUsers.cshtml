@@ -1,0 +1,11 @@
+﻿@page
+@model List<string>
+
+<h1>Connected Users</h1>
+
+<ul>
+    @foreach (var user in Model)
+    {
+        <li>@user</li>
+    }
+</ul>
